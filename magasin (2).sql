@@ -70,7 +70,7 @@ CREATE TABLE `client` (
   `adresse` varchar(60) NOT NULL,
   `mail` varchar(50) NOT NULL,
   `mot_de_passe` varchar(20) DEFAULT NULL,
-  `id_user` mediumint(11) NOT NULL
+  `id_user` mediumint(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 --
@@ -159,6 +159,7 @@ CREATE TABLE `user` (
   `id` mediumint(11) NOT NULL,
   `nom` varchar(20) NOT NULL,
   `prenom` varchar(20) NOT NULL,
+  `age` int(3) NOT NULL,
   `adresse` varchar(60) NOT NULL,
   `numéro` int(10) NOT NULL,
   `ville` varchar(15) NOT NULL,

@@ -12,70 +12,47 @@ if (!isset($_SESSION['user_id'])) {
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     <title>ACCUEIL</title>
+    <link rel="stylesheet" href="style.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
+        .welcome-header { text-align: center; margin-bottom: 40px; color: var(--dark); }
+        .welcome-header h1 { font-weight: 800; background: linear-gradient(to right, #4f46e5, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .menu-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .menu-card {
+            padding: 30px;
+            text-align: center;
             background: white;
-            min-height: 100vh;
+            border: 2px solid #eef2f7;
+            border-radius: 10px;
+            transition: 0.3s;
+            font-size: 1.1em;
         }
-        table {
-            background-color: white;
-            border-collapse: collapse;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        thead {
-            background: linear-gradient(135deg, #87CEEB 0%, #4682B4 100%);
-        }
-        thead th {
-            color: white;
-        }
-        th, td {
-            padding: 15px;
-        }
-        a {
-            color: #333;
-            text-decoration: none;
-            font-weight: bold;
-            background: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            display: inline-block;
-            margin: 8px;
-            transition: all 0.3s ease;
-            border: 2px solid #87CEEB;
-        }
-        a:hover {
-            text-decoration: none;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(135, 206, 235, 0.3);
-            background: #f8f9fa;
-        }
+        .menu-card.articles { border-left: 5px solid #6366f1; color: #6366f1; }
+        .menu-card.ventes { border-left: 5px solid #10b981; color: #10b981; }
+        .menu-card.effectuer { border-left: 5px solid #f59e0b; color: #f59e0b; }
+        .menu-card.clients { border-left: 5px solid #8b5cf6; color: #8b5cf6; }
+        .menu-card:hover { transform: translateX(10px); background: #f8fafc; border-color: inherit; }
     </style>
 </head>
 <body>
-    <table border="1" width="70%" cellpadding="10" cellspacing="0" align="center"> 
-        <thead>
-            <tr>
-                <th><img src="eneam.png" alt="Logo ENEAM" width="100" height="100"></th>
-                <th><h1>BIENVENUE SUR MA PLATEFORME <?php echo htmlspecialchars($_SESSION['user_nom']); ?></h1></th>
-                <th><img src="uac.jpg" alt="Logo UAC" width="100" height="100"></th>
-            </tr>
-        </thead>
-       <tbody>    
-            <tr>
-                <td colspan="3" align="center">
-                    <h1><a href="liste_articles.php">ARTICLE</a></h1>
-                    <h1><a href="listes-vente.php">VENTE</a></h1>
-                    <h1><a href="listes-client.php">CLIENT</a></h1>
-                    <h1><a href="formulaire_vente.php">EFFECTUER UNE VENTE</a></h1>
-                    <h1><a href="index.php?logout">DÉCONNEXION</a></h1>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="container">
+        <div class="welcome-header">
+            <h1>BIENVENUE DANS MA PLATEFORME, <?php echo htmlspecialchars($_SESSION['user_nom']); ?></h1>
+            <p>Gestionnaire de Magasin</p>
+        </div>
+
+        <div class="menu-grid">
+            <a href="liste_articles.php" class="menu-card articles btn">📦 ARTICLES</a>
+            <a href="listes-vente.php" class="menu-card ventes btn">📊 VOIR LES VENTES</a>
+            <a href="formulaire_vente.php" class="menu-card effectuer btn">💰 EFFECTUER UNE VENTE</a>
+            <a href="listes-client.php" class="menu-card clients btn">👥 LISTE DES CLIENTS</a>
+            <a href="index.php?logout" class="menu-card btn" style="border-color: var(--danger); color: var(--danger); border-left: 5px solid var(--danger);">🚪 DÉCONNEXION</a>
+        </div>
+    </div>
 </body>
 </html>

@@ -10,98 +10,62 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 try {
-    $idClient = isset($_POST['id_client']) ? intval($_POST['id_client']) : null;
-    $articlesJson = isset($_POST['articles']) ? $_POST['articles'] : '[]';
-    
-    if (!$idClient) {
-        http_response_code(400);
-        echo json_encode(['erreur' => 'Client invalide']);
-        exit();
-    }
-
-    $articles = json_decode($articlesJson, true);
-    if (!is_array($articles) || empty($articles)) {
-        http_response_code(400);
-        echo json_encode(['erreur' => 'Aucun article fourni']);
-        exit();
-    }
-
-    $stmtClient = $pdo->prepare("SELECT id_client FROM client WHERE id_client = ?");
-    $stmtClient->execute([$idClient]);
-    if ($stmtClient->rowCount() == 0) {
-        http_response_code(400);
-        echo json_encode(['erreur' => 'Client introuvable']);
-        exit();
-    }
-
     $pdo->beginTransaction();
 
-    $stmtArticle = $pdo->prepare("SELECT prix FROM article WHERE codart = ?");
-    $stmtInsertArticle = $pdo->prepare("INSERT INTO article (codart, description, prix, categorie) VALUES (?, ?, ?, ?)");
-    $stmtInsertCommande = $pdo->prepare("INSERT INTO commande (id_client, date_com) VALUES (?, ?)");
-    $stmtInsertLigneCommande = $pdo->prepare("INSERT INTO ligne_commande (id_com, codart, quantite) VALUES (?, ?, ?)");
-    $stmtInsertVente = $pdo->prepare("INSERT INTO vente (id_client, date_vente, montant_total) VALUES (?, NOW(), ?)");
-    $stmtInsertDetail = $pdo->prepare("INSERT INTO detail_vente (id_vente, codart, quantite, prix_unitaire, montant) VALUES (?, ?, ?, ?, ?)");
+    // 1. GESTION CLIENT (Vérifie si existe déjà par mail)
+    $stmtC = $pdo->prepare("SELECT id_client FROM client WHERE mail = ?");
+    $stmtC->execute([$_POST['mail']]);
+    $client = $stmtC->fetch();
 
-    $montantTotal = 0;
-    $articlesPreparees = [];
+    if (!$client) {
+        $stmtInsC = $pdo->prepare("INSERT INTO client (nom, prenom, age, numéro, ville, adresse, mail, id_user) VALUES (?,?,?,?,?,?,?,NULL)");
+        $stmtInsC->execute([$_POST['nom'], $_POST['prenom'], $_POST['age'], $_POST['numéro'], $_POST['ville'], $_POST['adresse'], $_POST['mail']]);
+        $idClient = $pdo->lastInsertId();
+    } else {
+        $idClient = $client['id_client'];
+    }
 
-    foreach ($articles as $article) {
-        $codart = trim($article['codart'] ?? '');
-        $quantite = intval($article['quantite'] ?? 0);
-        $prixUnitaire = isset($article['prix_unitaire']) ? floatval($article['prix_unitaire']) : null;
+    if (!isset($_POST['codart']) || !is_array($_POST['codart'])) {
+        throw new Exception("Aucun article n'a été sélectionné.");
+    }
 
-        if (!$codart || $quantite <= 0 || $prixUnitaire === null || $prixUnitaire < 0) {
-            throw new Exception("Article invalide : " . $codart);
+    // 2. CALCUL MONTANT TOTAL ET GESTION ARTICLES
+    $totalVente = 0;
+    $articlesAEnregistrer = [];
+
+    foreach ($_POST['codart'] as $key => $codart) {
+        $description = $_POST['description'][$key];
+        $prix = $_POST['prix'][$key];
+        $categorie = $_POST['categorie'][$key];
+        $quantite = $_POST['quantite'][$key];
+        $montantLigne = $prix * $quantite;
+        $totalVente += $montantLigne;
+
+        // Vérifie si article existe
+        $stmtA = $pdo->prepare("SELECT codart FROM article WHERE codart = ?");
+        $stmtA->execute([$codart]);
+        if (!$stmtA->fetch()) {
+            $stmtInsA = $pdo->prepare("INSERT INTO article (codart, description, prix, categorie) VALUES (?,?,?,?)");
+            $stmtInsA->execute([$codart, $description, $prix, $categorie]);
         }
 
-        $stmtArticle->execute([$codart]);
-        $result = $stmtArticle->fetch(PDO::FETCH_ASSOC);
-
-        if (!$result) {
-            $stmtInsertArticle->execute([
-                htmlspecialchars($codart, ENT_QUOTES, 'UTF-8'),
-                'Article créé depuis la vente',
-                $prixUnitaire,
-                'Vente'
-            ]);
-        } else {
-            $prixUnitaire = floatval($result['prix']);
-        }
-
-        $montantArticle = $prixUnitaire * $quantite;
-        $montantTotal += $montantArticle;
-
-        $articlesPreparees[] = [
+        $articlesAEnregistrer[] = [
             'codart' => $codart,
             'quantite' => $quantite,
-            'prix_unitaire' => $prixUnitaire,
-            'montant' => $montantArticle
+            'prix' => $prix,
+            'montant' => $montantLigne
         ];
     }
 
-    // Insérer la commande
-    $dateCommande = date('m/Y');
-    $stmtInsertCommande->execute([$idClient, $dateCommande]);
-    $idCommande = $pdo->lastInsertId();
-
-    $stmtInsertVente->execute([$idClient, $montantTotal]);
+    // 3. ENREGISTREMENT VENTE
+    $stmtV = $pdo->prepare("INSERT INTO vente (id_client, date_vente, montant_total) VALUES (?, NOW(), ?)");
+    $stmtV->execute([$idClient, $totalVente]);
     $idVente = $pdo->lastInsertId();
 
-    foreach ($articlesPreparees as $article) {
-        $stmtInsertLigneCommande->execute([
-            $idCommande,
-            $article['codart'],
-            $article['quantite']
-        ]);
-
-        $stmtInsertDetail->execute([
-            $idVente,
-            $article['codart'],
-            $article['quantite'],
-            $article['prix_unitaire'],
-            $article['montant']
-        ]);
+    // 4. DETAIL VENTE
+    $stmtD = $pdo->prepare("INSERT INTO detail_vente (id_vente, codart, quantite, prix_unitaire, montant) VALUES (?,?,?,?,?)");
+    foreach ($articlesAEnregistrer as $art) {
+        $stmtD->execute([$idVente, $art['codart'], $art['quantite'], $art['prix'], $art['montant']]);
     }
 
     // Valider la transaction

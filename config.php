@@ -1,13 +1,15 @@
 <?php
-$host = "sql200.infinityfree.com";
-$dbname = "if0_41822709_magasin";
-$user = "if0_41822709";
-$pass = "Vladimir0929";
+$host = "localhost";
+$dbname = "magasin";
+$user = "root";
+$pass = "";
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    die("Erreur : " . $e->getMessage());
+    error_log($e->getMessage());
+    die("Une erreur de connexion est survenue. Veuillez réessayer plus tard.");
 }
 ?>

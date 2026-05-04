@@ -2,415 +2,141 @@
 <html lang="fr">
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-    <title>Formulaire de vente</title>
-    <style type="text/css">
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #e8ecf3;
-            padding: 30px 20px;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 18px rgba(0,0,0,0.12);
-        }
-
-        h2 {
-            color: #222;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: bold;
-        }
-
-        select, input[type="number"] {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 6px;
-            font-size: 14px;
-            font-family: inherit;
-        }
-
-        select:focus, input[type="number"]:focus {
-            outline: none;
-            border-color: #4a90e2;
-            box-shadow: 0 0 5px rgba(74, 144, 226, 0.3);
-        }
-
-        .section-articles {
-            background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-            border: 1px solid #ddd;
-        }
-
-        .section-articles h3 {
-            color: #333;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #4a90e2;
-            padding-bottom: 10px;
-        }
-
-        .article-item {
-            background-color: white;
-            padding: 15px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr 0.5fr;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .article-item input,
-        .article-item select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 13px;
-        }
-
-        .article-item .prix-unitaire,
-        .article-item .montant-ligne {
-            padding: 8px;
-            background-color: #f5f5f5;
-            border-radius: 4px;
-            text-align: right;
-            font-weight: bold;
-        }
-
-        .btn-supprimer {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        .btn-supprimer:hover {
-            background-color: #c82333;
-        }
-
-        .btn-ajouter-article {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-bottom: 15px;
-        }
-
-        .btn-ajouter-article:hover {
-            background-color: #218838;
-        }
-
-        .resume-total {
-            background-color: #e7f3ff;
-            border: 2px solid #4a90e2;
-            padding: 15px;
-            border-radius: 6px;
-            margin-top: 20px;
-            text-align: right;
-        }
-
-        .resume-total h3 {
-            color: #4a90e2;
-            margin-bottom: 10px;
-        }
-
-        .montant-total-final {
-            font-size: 20px;
-            font-weight: bold;
-            color: #28a745;
-        }
-
-        .boutons-action {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            justify-content: center;
-        }
-
-        button[type="submit"],
-        .btn-retour {
-            padding: 12px 30px;
-            font-size: 14px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        button[type="submit"] {
-            background-color: #4a90e2;
-            color: white;
-        }
-
-        button[type="submit"]:hover {
-            background-color: #357ABD;
-        }
-
-        .btn-retour {
-            background-color: #6c757d;
-            color: white;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-retour:hover {
-            background-color: #5a6268;
-        }
-
-        .message-erreur {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-        }
-
-        .message-succes {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-        }
-
-        @media (max-width: 1200px) {
-            .article-item {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <title>Effectuer une Vente</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="container">
-    <h2>🛍️ Formulaire d'enregistrement de vente</h2>
+    <div class="header-actions">
+        <h2>🛍️ Formulaire d'enregistrement de vente</h2>
+        <a href="acceuil.php" class="btn btn-secondary">← Retour</a>
+    </div>
 
     <?php
     require 'config.php';
-
-    // Afficher les messages de statut
-    if (isset($_GET['statut'])) {
-        if ($_GET['statut'] === 'ok') {
-            echo '<div class="message-succes">✓ Vente enregistrée avec succès !</div>';
-        } elseif ($_GET['statut'] === 'erreur') {
-            echo '<div class="message-erreur">✗ Erreur : ' . htmlspecialchars($_GET['msg'] ?? 'Une erreur est survenue') . '</div>';
-        }
-    }
-
     try {
-        $stmtClients = $pdo->query("SELECT id_client, nom, prenom FROM client ORDER BY nom, prenom");
+        $stmtClients = $pdo->query("SELECT nom, prenom, age, numéro, ville, adresse, mail FROM client");
         $clients = $stmtClients->fetchAll(PDO::FETCH_ASSOC);
 
-        $stmtArticles = $pdo->query("SELECT codart, description, prix FROM article ORDER BY description");
+        $stmtArticles = $pdo->query("SELECT codart, description, prix, categorie FROM article");
         $articles = $stmtArticles->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
-        echo '<div class="message-erreur">Erreur : lecture impossible des données.</div>';
         $clients = [];
         $articles = [];
     }
     ?>
 
     <form id="form-vente" method="POST" action="enregistrer_vente.php" onsubmit="return soumettreVente(event)">
-        <div class="form-group">
-            <label for="id_client">Client *</label>
-            <select id="id_client" name="id_client" required>
-                <option value="">-- Sélectionner un client --</option>
-                <?php
-                foreach ($clients as $client) {
-                    echo '<option value="' . htmlspecialchars($client['id_client']) . '">';
-                    echo htmlspecialchars($client['nom'] . ' ' . $client['prenom']);
-                    echo '</option>';
-                }
-                ?>
-            </select>
+        <!-- SECTION 1 : CLIENT -->
+        <div class="form-section">
+            <h3>👤 Informations du Client</h3>
+            <div class="grid-form">
+                <input list="liste-clients" name="nom" id="client_nom" placeholder="Nom du client" oninput="remplissageAutoClient(this)" required>
+                <input type="text" name="prenom" id="client_prenom" placeholder="Prénom" required>
+                <input type="number" name="age" id="client_age" placeholder="Âge" required>
+                <input type="tel" name="numéro" id="client_numéro" placeholder="Numéro Téléphone" required>
+                <input type="text" name="ville" id="client_ville" placeholder="Ville" required>
+                <input type="text" name="adresse" id="client_adresse" placeholder="Adresse" required>
+                <input type="email" name="mail" id="client_mail" placeholder="Adresse Mail" required>
+            </div>
         </div>
-        <datalist id="codes-article">
-            <?php foreach ($articles as $article) {
-                echo '<option value="' . htmlspecialchars($article['codart']) . '">' . htmlspecialchars($article['description']) . '</option>';
-            } ?>
+        
+        <datalist id="liste-clients">
+            <?php foreach ($clients as $c) echo '<option value="'.htmlspecialchars($c['nom']).'">'.htmlspecialchars($c['prenom']).'</option>'; ?>
         </datalist>
 
-        <div class="section-articles">
-            <h3>📦 Articles à vendre</h3>
-            
-            <button type="button" class="btn-ajouter-article" onclick="ajouterArticle()">
-                + Ajouter un article
-            </button>
-
+        <!-- SECTION 2 : ARTICLES -->
+        <div class="form-section">
+            <h3>📦 Liste des Articles</h3>
             <div id="articles-list">
-                <!-- Les articles seront ajoutés ici via JavaScript -->
+                <div class="article-item grid-form" style="margin-bottom: 10px; border-bottom: 1px dashed #ccc; padding-bottom: 10px; align-items: end;">
+                    <input list="codes-article" name="codart[]" class="codart-input" placeholder="Code Article (ex: CA300)" oninput="remplissageAuto(this)" required>
+                    <input type="text" name="description[]" class="desc-input" placeholder="Description">
+                    <input type="number" name="prix[]" class="prix-input" placeholder="Prix" oninput="calculerTotal()">
+                    <input type="text" name="categorie[]" class="cat-input" placeholder="Catégorie">
+                    <input type="number" name="quantite[]" class="qty-input" placeholder="Quantité" value="1" oninput="calculerTotal()" required>
+                    <button type="button" class="btn btn-danger" onclick="supprimerLigne(this)" style="padding: 10px; height: 40px;">✕</button>
+                </div>
             </div>
+            <button type="button" class="btn btn-secondary" onclick="ajouterArticle()">+ Ajouter un autre article</button>
+        </div>
+        
+        <datalist id="codes-article">
+            <?php foreach ($articles as $a) echo '<option value="'.htmlspecialchars($a['codart']).'">'.htmlspecialchars($a['description']).'</option>'; ?>
+        </datalist>
+
+        <!-- SECTION 3 : TOTAL -->
+        <div class="total-box" style="margin-top: 20px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
+            MONTANT À RÉGLER : <span id="total-final" style="font-size: 1.2em; color: var(--success);">0.00</span> XOF
         </div>
 
-        <div class="resume-total">
-            <h3>Résumé de la vente</h3>
-            <div>
-                <strong>Nombre d'articles : </strong>
-                <span id="nb-articles">0</span>
-            </div>
-            <div class="montant-total-final">
-                Montant total : <span id="montant-total">0.00</span> XOF
-            </div>
-        </div>
-
-        <div class="boutons-action">
-            <button type="submit">✓ Valider la vente</button>
-            <a href="acceuil.php" class="btn-retour">← Retour</a>
+        <div style="margin-top: 20px; text-align: center;">
+            <button type="submit" class="btn btn-primary" style="padding: 15px 40px; font-size: 1.2em;">Enregistrer la Vente</button>
         </div>
     </form>
 </div>
 
 <script>
     const articlesData = <?php echo json_encode($articles); ?>;
-    let compteurArticles = 0;
+    const clientsData = <?php echo json_encode($clients); ?>;
+
+    function remplissageAutoClient(input) {
+        const nom = input.value;
+        const client = clientsData.find(c => c.nom === nom);
+        if (client) {
+            document.getElementById('client_prenom').value = client.prenom;
+            document.getElementById('client_age').value = client.age;
+            document.getElementById('client_numéro').value = client.numéro;
+            document.getElementById('client_ville').value = client.ville;
+            document.getElementById('client_adresse').value = client.adresse;
+            document.getElementById('client_mail').value = client.mail;
+        }
+    }
 
     function ajouterArticle() {
-        const articlesList = document.getElementById('articles-list');
-        compteurArticles++;
-
-        const articleDiv = document.createElement('div');
-        articleDiv.className = 'article-item';
-        articleDiv.id = 'article-' + compteurArticles;
-
-        articleDiv.innerHTML = `
-            <input list="codes-article" type="text" class="codart-input" data-index="${compteurArticles}" placeholder="Code article" oninput="mettreAJourPrixParCode(this)" required>
-            <input type="number" class="prix-input" data-index="${compteurArticles}" placeholder="Prix de l'article" min="0" step="0.01" value="0.00" oninput="calculerMontants()" required>
-            <input type="number" class="quantite-input" data-index="${compteurArticles}" placeholder="Quantité" min="1" value="1" oninput="calculerMontants()" required>
-            <div class="montant-ligne" id="montant-${compteurArticles}">0.00</div>
-            <button type="button" class="btn-supprimer" onclick="supprimerArticle(${compteurArticles})">
-                ✕
-            </button>
-        `;
-
-        articlesList.appendChild(articleDiv);
-        calculerMontants();
-    }
-
-    function mettreAJourPrixParCode(codeInput) {
-        const index = codeInput.dataset.index;
-        const codart = codeInput.value.trim();
-        const article = articlesData.find(a => a.codart === codart);
-        const prixInput = document.querySelector(`.prix-input[data-index="${index}"]`);
-
-        if (article && prixInput) {
-            prixInput.value = parseFloat(article.prix).toFixed(2);
-        }
-        calculerMontants();
-    }
-
-    function calculerMontants() {
-        let montantTotal = 0;
-        let nbArticles = 0;
-
-        document.querySelectorAll('.article-item').forEach(item => {
-            const codeInput = item.querySelector('.codart-input');
-            const prixInput = item.querySelector('.prix-input');
-            const quantiteInput = item.querySelector('.quantite-input');
-            const index = quantiteInput.dataset.index;
-
-            const code = codeInput.value.trim();
-            const prixUnitaire = parseFloat(prixInput.value) || 0;
-            const quantite = parseInt(quantiteInput.value) || 0;
-
-            if (code && prixUnitaire >= 0 && quantite > 0) {
-                const montantLigne = prixUnitaire * quantite;
-                document.getElementById('montant-' + index).textContent = montantLigne.toFixed(2);
-                montantTotal += montantLigne;
-                nbArticles++;
-            } else {
-                document.getElementById('montant-' + index).textContent = '0.00';
-            }
+        const list = document.getElementById('articles-list');
+        const newItem = list.children[0].cloneNode(true);
+        newItem.querySelectorAll('input').forEach(input => {
+            if(input.name !== 'quantite[]') input.value = '';
+            else input.value = 1;
         });
-
-        document.getElementById('montant-total').textContent = montantTotal.toFixed(2);
-        document.getElementById('nb-articles').textContent = nbArticles;
+        list.appendChild(newItem);
     }
 
-    function supprimerArticle(index) {
-        document.getElementById('article-' + index).remove();
-        calculerMontants();
+    function supprimerLigne(btn) {
+        const list = document.getElementById('articles-list');
+        if (list.children.length > 1) {
+            btn.closest('.article-item').remove();
+            calculerTotal();
+        }
+    }
+
+    function remplissageAuto(input) {
+        const item = input.closest('.article-item');
+        const data = articlesData.find(a => a.codart === input.value);
+        if (data) {
+            item.querySelector('.desc-input').value = data.description;
+            item.querySelector('.prix-input').value = data.prix;
+            item.querySelector('.cat-input').value = data.categorie;
+        }
+        calculerTotal();
+    }
+
+    function calculerTotal() {
+        let total = 0;
+        document.querySelectorAll('.article-item').forEach(item => {
+            const p = item.querySelector('.prix-input').value || 0;
+            const q = item.querySelector('.qty-input').value || 0;
+            total += (p * q);
+        });
+        document.getElementById('total-final').textContent = total.toFixed(2);
     }
 
     function soumettreVente(event) {
         event.preventDefault();
+        const form = document.getElementById('form-vente');
+        const formData = new FormData(form);
 
-        const idClient = document.getElementById('id_client').value;
-        const articleItems = document.querySelectorAll('.article-item');
-
-        if (!idClient) {
-            alert('Veuillez sélectionner un client !');
-            return false;
-        }
-
-        if (articleItems.length === 0) {
-            alert('Veuillez ajouter au moins un article !');
-            return false;
-        }
-
-        const articles = [];
-        let hasValidArticle = false;
-
-        articleItems.forEach(item => {
-            const codeInput = item.querySelector('.codart-input');
-            const prixInput = item.querySelector('.prix-input');
-            const quantiteInput = item.querySelector('.quantite-input');
-
-            const codart = codeInput.value.trim();
-            const prixUnitaire = parseFloat(prixInput.value) || 0;
-            const quantite = parseInt(quantiteInput.value) || 0;
-
-            if (codart && prixUnitaire >= 0 && quantite > 0) {
-                articles.push({
-                    codart: codart,
-                    prix_unitaire: prixUnitaire,
-                    quantite: quantite
-                });
-                hasValidArticle = true;
-            }
-        });
-
-        if (!hasValidArticle) {
-            alert('Veuillez remplir les articles (code, prix et quantité) !');
-            return false;
-        }
-
-        // Préparer les données à envoyer
-        const formData = new FormData();
-        formData.append('id_client', idClient);
-        formData.append('articles', JSON.stringify(articles));
-
-        // Envoyer via fetch
         fetch('enregistrer_vente.php', {
             method: 'POST',
             body: formData
@@ -418,8 +144,11 @@
         .then(response => response.json())
         .then(data => {
             if (data.succes) {
-                alert('✓ Vente enregistrée avec succès !');
-                window.location.href = 'formulaire_vente.php?statut=ok';
+                alert('Vente enregistrée avec succès !');
+                form.reset();
+                const list = document.getElementById('articles-list');
+                while (list.children.length > 1) list.removeChild(list.lastChild);
+                document.getElementById('total-final').textContent = '0.00';
             } else if (data.erreur) {
                 alert('✗ Erreur : ' + data.erreur);
             }
@@ -431,9 +160,6 @@
 
         return false;
     }
-    window.addEventListener('load', () => {
-        ajouterArticle();
-    });
 </script>
 </body>
 </html>

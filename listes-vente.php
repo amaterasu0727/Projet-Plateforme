@@ -3,138 +3,21 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     <title>Liste des ventes</title>
-    <style type="text/css">
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #e8ecf3;
-            padding: 30px 20px;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 18px rgba(0,0,0,0.12);
-        }
-        h2 {
-            color: #222;
-            margin-top: 0;
-            margin-bottom: 8px;
-        }
-        h4 {
-            color: #444;
-            margin: 10px 0 18px 0;
-        }
-        h5 {
-            color: #555;
-            margin: 15px 0 8px 0;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border-left: 4px solid #4a90e2;
-        }
-        .vente-section {
-            margin-bottom: 30px;
-            padding: 15px;
-            background-color: #f5f7fa;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-            border: 1px solid #bbb;
-            background-color: #fff;
-        }
-        table thead {
-            background-color: #f2f2f2;
-            color: #222;
-        }
-        table th,
-        table td {
-            padding: 12px 14px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-        table th {
-            font-weight: bold;
-        }
-        table tbody tr:nth-child(even) {
-            background-color: #fafafa;
-        }
-        table tbody tr:hover {
-            background-color: #f4f6fb;
-        }
-        .montant-total {
-            font-weight: bold;
-            color: #28a745;
-            font-size: 16px;
-        }
-        .lien-retour {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 18px;
-            background-color: #4a90e2;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-size: 14px;
-            margin-right: 10px;
-        }
-        .lien-retour:hover {
-            background-color: #357ABD;
-        }
-        .btn-retour {
-            padding: 10px 18px;
-            background-color: #4a90e2;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 14px;
-            cursor: pointer;
-        }
-        .btn-retour:hover {
-            background-color: #357ABD;
-        }
-        .message-erreur {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-        }
-        .message-vide {
-            background-color: #e7f3ff;
-            color: #185fa5;
-            border: 1px solid #bee5eb;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-        }
-        .info-vente {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-        .info-vente span {
-            color: #555;
-        }
-        .total-vente {
-            text-align: right;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 2px solid #ddd;
-            font-weight: bold;
-            font-size: 15px;
-        }
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .vente-section { margin-bottom: 30px; padding: 15px; background: #f9f9f9; border-radius: 8px; border: 1px solid #eee; }
+        h5 { background: var(--light); padding: 10px; border-left: 4px solid var(--primary); margin: 0 0 10px 0; }
     </style>
 </head>
 <body>
 <div class="container">
-    <h2>🛒 Liste de toutes les ventes</h2>
+    <div class="header-actions">
+        <h2>🛒 Liste de toutes les ventes</h2>
+        <div>
+            <a href="acceuil.php" class="btn btn-secondary">← Retour</a>
+            <a href="formulaire_vente.php" class="btn btn-success">+ Effectuer une vente</a>
+        </div>
+    </div>
 
     <?php
     require 'config.php';
@@ -158,7 +41,7 @@
         echo '<div class="message-vide">Aucune vente enregistrée pour le moment.</div>';
     } else {
         $nbventes = count($ventes);
-        echo '<h4>Il y a ' . $nbventes . ' vente(s) enregistrée(s)</h4>';
+        echo '<h4>Il y a ' . $nbventes . ' ventes enregistrées</h4>';
 
         $total_general = 0;
 
@@ -229,9 +112,6 @@
         echo '</div>';
     }
     ?>
-
-    <a class="lien-retour" href="formulaire_vente.php">+ Effectuer une nouvelle vente</a>
-    <input type="button" class="btn-retour" value="Retour à l'accueil" onclick="window.location.href='acceuil.php'">
 </div>
 </body>
 </html>
