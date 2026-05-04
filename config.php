@@ -1,8 +1,8 @@
 <?php
-$host = "localhost";
-$dbname = "magasin";
-$user = "root";
-$pass = "";
+$host = "sql200.infinityfree.com";
+$dbname = "ifo_41822709_magasin";
+$user = "ifo_41822709";
+$pass = "Vladimir0929";
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
